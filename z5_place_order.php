@@ -18,7 +18,6 @@ $cart_items = $_SESSION['cart'] ?? [];
 $user_id = $_SESSION['user_id'] ?? 0;
 
 // Проверяем, что корзина не пуста и ID пользователя известен
-// Эта проверка все еще полезна, на случай если сессия истекла между страницами
 if (empty($cart_items) || $user_id === 0) {
     header("Location: z1_cart.php");
     exit;
@@ -65,13 +64,11 @@ foreach ($selected_ids as $id) {
 $db->begin_transaction();
 
 try {
-    // 1. Создаем запись в таблице `orders`
     $stmt_order = $db->prepare("INSERT INTO orders (user_id, customer_name, customer_phone, customer_address, customer_comment, total_price) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt_order->bind_param("issssd", $user_id, $name, $phone, $address, $comment, $total_price);
     $stmt_order->execute();
     $order_id = $db->insert_id; // Получаем ID созданного заказа
 
-    // 2. Добавляем товары в `order_items` и обновляем остатки
     $stmt_items = $db->prepare("INSERT INTO order_items (order_id, product_name, quantity, price) VALUES (?, ?, ?, ?)");
     $stmt_stock = $db->prepare("UPDATE menu_items SET stock = stock - ? WHERE id = ?");
 
@@ -84,10 +81,8 @@ try {
         $stmt_stock->execute();
     }
 
-    // Если все прошло успешно, подтверждаем транзакцию
     $db->commit();
 
-    // 3. Удаляем из корзины только заказанные товары
     foreach ($selected_ids as $id) {
         unset($_SESSION['cart'][$id]);
     }

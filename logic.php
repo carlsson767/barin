@@ -7,10 +7,7 @@ if (!isset($_SESSION['username'])) {
     $_SESSION['username'] = 'Гость';
 }
 
-// --- Логика сохранения истории посещений в Cookie ---
-
 $history = [];
-// 1. Читаем существующую историю из cookie
 if (isset($_COOKIE['page_history'])) {
     // Декодируем JSON-строку обратно в массив
     $history = json_decode($_COOKIE['page_history'], true);
@@ -19,7 +16,6 @@ if (isset($_COOKIE['page_history'])) {
     }
 }
 
-// 2. Определяем текущую страницу и добавляем в историю
 $current_url = $_SERVER['REQUEST_URI'];
 $page_name = "Неизвестная страница";
 if (strpos($current_url, 'menu.php') !== false) $page_name = "Меню";
@@ -36,6 +32,5 @@ if (!$last_entry || $last_entry['url'] !== $current_url) {
     ];
 }
 
-// 3. Сохраняем обновленную историю обратно в cookie
 // Кодируем массив в JSON-строку и устанавливаем cookie на 30 дней
 setcookie('page_history', json_encode($history), time() + (86400 * 30), "/");

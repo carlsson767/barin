@@ -1,6 +1,5 @@
 <?php
-// Вся PHP-логика должна быть в начале файла, до вывода HTML
-require_once 'core_z4.php'; // Подключаем ядро с авторизацией и историей
+require_once 'core_z4.php';
 // Защита страницы от неавторизованных пользователей
 if (!check_user()) {
     header("Location: login.php");
@@ -17,8 +16,7 @@ while ($row = $categories_result->fetch_assoc()) {
     $categories[] = $row;
 }
 
-// Получаем все товары из shop_products
-$menu_items = getProducts($db); // Теперь эта функция вернет блюда из menu_items
+$menu_items = getProducts($db);
 ?>
 <!DOCTYPE html>
 <html lang="ru">

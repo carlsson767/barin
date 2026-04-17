@@ -103,7 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-// === E-COMMERCE FUNCTIONS (from lab 12-13) ===
 /**
  * Получает список товаров из базы данных.
  * @param mysqli $db - объект подключения к БД
